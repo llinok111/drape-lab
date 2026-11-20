@@ -46,7 +46,7 @@ python3 -m http.server 4173  # 打开 http://localhost:4173
 | `main.js` / `index.html` | three.js 渲染 + 轨道相机交互，只消费 core 的输出 |
 | `tools/gen-sample.mjs` | 确定性生成 `data/scenarios.json` |
 | `baseline/naive.mjs` | 单子步 PBD 基线（对照） |
-| `bench/verify.mjs` / `bench/bench.mjs` | 13 条断言 / 计时与指标 |
+| `bench/verify.mjs` / `bench/bench.mjs` | 14 条断言 / 计时与指标 |
 | `bench/result.json` | 真实运行产出的数字 |
 
 MIT License.
