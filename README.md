@@ -19,7 +19,7 @@ Upstream: none
 
 ```bash
 node tools/gen-sample.mjs   # 重建 data/scenarios.json
-node bench/verify.mjs       # 13 条行为断言，全过退出码 0
+node bench/verify.mjs       # 14 条行为断言，全过退出码 0
 node bench/bench.mjs        # 计时 + 4 场景指标，写 bench/result.json
 python3 -m http.server 4173  # 打开 http://localhost:4173
 ```
