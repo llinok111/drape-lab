@@ -5,6 +5,7 @@
  */
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
 
 const base = {
   dt: 1 / 60,
@@ -31,10 +32,9 @@ const scenarios = [
   },
   {
     id: 'gust',
-    note: '41x41 sheet, top pinned, 9.0 m/s^2 gust, lighter damping',
+    note: '41x41 sheet, top pinned, 9.0 m/s^2 gust',
     cloth: { nx: 41, ny: 41, width: 2, height: 2, totalMass: 1, pin: 'top' },
     wind: 9,
-    damping: 0.35,
     ...base
   },
   {
@@ -50,9 +50,11 @@ export function scenarioText() {
   return JSON.stringify({ version: 1, scenarios }, null, 2) + '\n';
 }
 
-mkdirSync('data', { recursive: true });
-const text = scenarioText();
-writeFileSync('data/scenarios.json', text);
-const hash = createHash('sha256').update(text).digest('hex');
-console.log(`wrote data/scenarios.json (${text.length} bytes, sha256 ${hash.slice(0, 16)})`);
-console.log(scenarios.map((s) => `${s.id}: ${s.cloth.nx}x${s.cloth.ny}, ${s.steps} steps`).join('\n'));
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  mkdirSync('data', { recursive: true });
+  const text = scenarioText();
+  writeFileSync('data/scenarios.json', text);
+  const hash = createHash('sha256').update(text).digest('hex');
+  console.log(`wrote data/scenarios.json (${text.length} bytes, sha256 ${hash.slice(0, 16)})`);
+  console.log(scenarios.map((s) => `${s.id}: ${s.cloth.nx}x${s.cloth.ny}, ${s.steps} steps`).join('\n'));
+}

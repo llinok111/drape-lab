@@ -16,6 +16,9 @@ export function runNaive(scenario) {
   const drag = scenario.drag || null;
   let maxStrain = 0;
   let worstPen = 0;
+  let sceneTime = 0;
+  const wind = scenario.wind || 0;
+  const damping = scenario.damping === undefined ? 0.8 : +scenario.damping;
 
   for (let f = 0; f < scenario.steps; f++) {
     const prev = cloth.prev;
@@ -23,7 +26,9 @@ export function runNaive(scenario) {
     const k = scenario.gravity * dt * dt;
     for (let p = 0; p < cloth.n; p++) {
       if (cloth.invMass[p] === 0) continue;
+      const gust = wind === 0 ? 0 : wind * (0.6 + 0.4 * Math.sin(3.1 * sceneTime + 2.0 * cloth.pos[3 * p + 1]));
       cloth.vel[3 * p + 1] += scenario.gravity * dt;
+      cloth.vel[3 * p + 2] += gust * dt;
       cloth.pos[3 * p] += cloth.vel[3 * p] * dt;
       cloth.pos[3 * p + 1] += cloth.vel[3 * p + 1] * dt;
       cloth.pos[3 * p + 2] += cloth.vel[3 * p + 2] * dt;
@@ -74,13 +79,14 @@ export function runNaive(scenario) {
     for (let p = 0; p < cloth.n; p++) {
       if (cloth.invMass[p] === 0) continue;
       for (let c = 0; c < 3; c++) {
-        cloth.vel[3 * p + c] = (cloth.pos[3 * p + c] - prev[3 * p + c]) / dt * 0.99;
+        cloth.vel[3 * p + c] = (cloth.pos[3 * p + c] - prev[3 * p + c]) / dt * Math.max(0, 1 - damping * dt);
       }
     }
     const st = strain(cloth, 'structural').max;
     if (st > maxStrain) maxStrain = st;
     const pen = penetration(cloth, groundY, sphere);
     if (pen > worstPen) worstPen = pen;
+    sceneTime += dt;
   }
   return { maxStrain, worstPenetration: worstPen, cloth };
 }

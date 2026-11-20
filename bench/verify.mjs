@@ -3,6 +3,9 @@
  * Every number printed below is measured in this process.
  */
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { createHash } from 'node:crypto';
 import {
   createCloth, stepCloth, strain, penetration, hashPositions, finite, runScenario
@@ -22,9 +25,18 @@ function check(name, ok, detail) {
 const fileText = readFileSync('data/scenarios.json', 'utf8');
 const { scenarios } = JSON.parse(fileText);
 
-check('A1 generator is byte-deterministic',
-  createHash('sha256').update(scenarioText()).digest('hex') === createHash('sha256').update(fileText).digest('hex'),
-  `sha256(scenarios.json)=${createHash('sha256').update(fileText).digest('hex').slice(0, 16)}`);
+// Independence: regenerate into a temp copy and compare with the *committed*
+// bytes (git index), not with whatever is on disk — a generator drift shows here.
+execFileSync(process.execPath, ['tools/gen-sample.mjs'], { stdio: 'ignore' });
+const regenerated = readFileSync('data/scenarios.json', 'utf8');
+let committed = regenerated;
+try { committed = execFileSync('git', ['show', 'HEAD:data/scenarios.json'], { encoding: 'utf8' }); }
+catch { /* not a checkout with history: fall back to the on-disk copy */ }
+const genSha = createHash('sha256').update(regenerated).digest('hex');
+const committedSha = createHash('sha256').update(committed).digest('hex');
+check('A1 generator matches committed data byte-for-byte (independent subprocess)',
+  genSha === committedSha && createHash('sha256').update(scenarioText()).digest('hex') === genSha,
+  `sha256=${genSha.slice(0, 16)}`);
 
 check('A2 four scenarios x 900 frames', scenarios.length === 4 && scenarios.every((s) => s.steps === 900),
   scenarios.map((s) => `${s.id}:${s.steps}`).join(', '));
@@ -53,6 +65,11 @@ check('A7 replay is bit-identical (same hash, same strain)',
   `${again.hash} vs ${results[0].r.hash}`);
 
 const naive = runNaive(hang);
+const gust = scenarios.find((s) => s.id === 'gust');
+const naiveGust = runNaive(gust);
+check('A8b baseline applies the same wind as core (gust drags further than hang)',
+  naiveGust.maxStrain > naive.maxStrain * 1.02,
+  `naive gust ${(naiveGust.maxStrain * 100).toFixed(3)}% vs hang ${(naive.maxStrain * 100).toFixed(3)}%`);
 check('A8 one-substep PBD baseline stretches > 10%',
   naive.maxStrain > 0.10,
   `naive max strain ${(naive.maxStrain * 100).toFixed(3)}% vs XPBD ${(results[0].r.maxStrain * 100).toFixed(3)}%`);

@@ -40,7 +40,7 @@
     },
     {
       "id": "gust",
-      "note": "41x41 sheet, top pinned, 9.0 m/s^2 gust, lighter damping",
+      "note": "41x41 sheet, top pinned, 9.0 m/s^2 gust",
       "cloth": {
         "nx": 41,
         "ny": 41,
@@ -50,11 +50,11 @@
         "pin": "top"
       },
       "wind": 9,
-      "damping": 0.8,
       "dt": 0.016666666666666666,
       "substeps": 16,
       "gravity": -9.81,
       "groundY": -1.5,
+      "damping": 0.8,
       "steps": 900
     },
     {
