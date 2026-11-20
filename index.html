@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>drape-lab — XPBD cloth certificate</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; background: #0b0f14; color: #dbe7f3;
+    font: 13px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  #app { position: fixed; inset: 0; }
+  .panel { position: absolute; background: rgba(12, 18, 26, .82); border: 1px solid #22303f;
+    border-radius: 10px; padding: 12px 14px; backdrop-filter: blur(6px); }
+  #hud { top: 14px; left: 14px; width: 310px; }
+  #controls { bottom: 14px; left: 14px; width: 310px; }
+  h1 { font-size: 14px; margin: 0 0 6px; letter-spacing: .04em; color: #7fe3c4; }
+  table { border-collapse: collapse; width: 100%; }
+  td { padding: 1px 0; vertical-align: top; }
+  td.k { color: #7d93a8; width: 46%; }
+  td.v { color: #e8f2fb; }
+  button { background: #16222e; color: #cfe3f2; border: 1px solid #2b3d4f; border-radius: 6px;
+    padding: 3px 8px; margin: 2px 2px 0 0; cursor: pointer; font: inherit; }
+  button.on { background: #1f6f5b; border-color: #33b48f; color: #eafff8; }
+  input[type=range] { width: 100%; }
+  .ok { color: #59e0a8; } .bad { color: #ff8a7a; } .dim { color: #7d93a8; }
+  #err { top: 14px; right: 14px; max-width: 420px; display: none; border-color: #7a2a2a; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div id="app"></div>
+
+<div id="hud" class="panel">
+  <h1>drape-lab · XPBD cloth certificate</h1>
+  <table>
+    <tr><td class="k">scenario</td><td class="v" id="s-id">—</td></tr>
+    <tr><td class="k">frame</td><td class="v" id="s-frame">0 / 900</td></tr>
+    <tr><td class="k">max strain</td><td class="v" id="s-strain">—</td></tr>
+    <tr><td class="k">penetration</td><td class="v" id="s-pen">—</td></tr>
+    <tr><td class="k">live hash</td><td class="v" id="s-hash">—</td></tr>
+    <tr><td class="k">node hash</td><td class="v" id="s-node">—</td></tr>
+    <tr><td class="k">certificate</td><td class="v" id="s-cert">waiting for 900 frames</td></tr>
+  </table>
+</div>
+
+<div id="controls" class="panel">
+  <div id="scenarios"></div>
+  <div style="margin-top:8px">
+    <label class="dim">wind multiplier <span id="w-val">1.00x</span></label>
+    <input id="wind" type="range" min="0" max="3" step="0.05" value="1" />
+  </div>
+  <div style="margin-top:6px">
+    <button id="pause">pause</button>
+    <button id="reset">reset</button>
+    <span class="dim">drag = orbit · wheel = zoom</span>
+  </div>
+</div>
+
+<div id="err" class="panel"></div>
+
+<script type="module" src="./main.js"></script>
+</body>
+</html>

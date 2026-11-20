@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "hang",
+      "note": "41x41 sheet, whole top edge pinned, no wind: pure gravity drape",
+      "cloth": {
+        "nx": 41,
+        "ny": 41,
+        "width": 2,
+        "height": 2,
+        "totalMass": 1,
+        "pin": "top"
+      },
+      "dt": 0.016666666666666666,
+      "substeps": 16,
+      "gravity": -9.81,
+      "groundY": -1.5,
+      "damping": 0.8,
+      "steps": 900
+    },
+    {
+      "id": "breeze",
+      "note": "31x31 sheet, top pinned, steady 2.5 m/s^2 gust along +z",
+      "cloth": {
+        "nx": 31,
+        "ny": 31,
+        "width": 2,
+        "height": 2,
+        "totalMass": 1,
+        "pin": "top"
+      },
+      "wind": 2.5,
+      "dt": 0.016666666666666666,
+      "substeps": 16,
+      "gravity": -9.81,
+      "groundY": -1.5,
+      "damping": 0.8,
+      "steps": 900
+    },
+    {
+      "id": "gust",
+      "note": "41x41 sheet, top pinned, 9.0 m/s^2 gust, lighter damping",
+      "cloth": {
+        "nx": 41,
+        "ny": 41,
+        "width": 2,
+        "height": 2,
+        "totalMass": 1,
+        "pin": "top"
+      },
+      "wind": 9,
+      "damping": 0.8,
+      "dt": 0.016666666666666666,
+      "substeps": 16,
+      "gravity": -9.81,
+      "groundY": -1.5,
+      "steps": 900
+    },
+    {
+      "id": "calm",
+      "note": "31x31 sheet, top pinned, light 1.2 m/s^2 breeze",
+      "cloth": {
+        "nx": 31,
+        "ny": 31,
+        "width": 2,
+        "height": 2,
+        "totalMass": 1,
+        "pin": "top"
+      },
+      "wind": 1.2,
+      "dt": 0.016666666666666666,
+      "substeps": 16,
+      "gravity": -9.81,
+      "groundY": -1.5,
+      "damping": 0.8,
+      "steps": 900
+    }
+  ]
+}
